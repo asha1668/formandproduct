@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup Page</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Signup</h2>
+        <form id="signup-form">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <h2>User List</h2>
+        <ul id="user-list"></ul>
+    </div>
+
+    <script>
+        const signupForm = document.getElementById('signup-form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const userList = document.getElementById('user-list');
+
+        signupForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+
+            // Check if local storage is supported
+            if (typeof(Storage) !== "undefined") {
+                // Retrieve existing user data or initialize an empty array
+                const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+
+                // Add the new user to the array
+                existingUsers.push({ username, password });
+
+                // Store the updated array in local storage
+                localStorage.setItem('users', JSON.stringify(existingUsers));
+
+                // Clear the input fields
+                usernameInput.value = '';
+                passwordInput.value = '';
+
+                // Update the user list
+                updateUserList(existingUsers);
+            } else {
+                alert('Local storage is not supported in this browser.');
+            }
+        });
+
+        // Function to update the user list
+        function updateUserList(users) {
+            userList.innerHTML = '';
+            users.forEach(function (user) {
+                const li = document.createElement('li');
+                li.textContent = `Username: ${user.username}, Password: ${user.password}`;
+                userList.appendChild(li);
+            });
+        }
+
+        // Initial load of user data
+        const initialUsers = JSON.parse(localStorage.getItem('users')) || [];
+        updateUserList(initialUsers);
+    </script>
+</body>
+</html>
